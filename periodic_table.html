@@ -1,0 +1,1025 @@
+
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>超炫酷週期表</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+        body {
+            font-family: 'Orbitron', sans-serif;
+            background: linear-gradient(45deg, #000000, #1a1a2e, #16213e, #0f3460);
+            color: #00FFFF;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+            overflow-x: hidden;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            position: relative;
+        }
+        .container::before {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            right: -5px;
+            bottom: -5px;
+            background: linear-gradient(45deg, #ff00ff, #00ff00, #ff00ff, #00ff00);
+            z-index: -1;
+            filter: blur(20px);
+            opacity: 0.7;
+            animation: glowing 20s linear infinite;
+        }
+        @keyframes glowing {
+            0% { filter: hue-rotate(0deg); }
+            100% { filter: hue-rotate(360deg); }
+        }
+        h1 {
+            text-align: center;
+            font-size: 3.5em;
+            margin-bottom: 30px;
+            text-shadow: 0 0 10px #00FFFF, 0 0 20px #00FFFF, 0 0 30px #00FFFF;
+            animation: pulsate 2s infinite alternate;
+        }
+        @keyframes pulsate {
+            0% { text-shadow: 0 0 10px #00FFFF, 0 0 20px #00FFFF, 0 0 30px #00FFFF; }
+            100% { text-shadow: 0 0 20px #00FFFF, 0 0 30px #00FFFF, 0 0 40px #00FFFF, 0 0 50px #00FFFF, 0 0 60px #00FFFF; }
+        }
+        .periodic-table {
+            display: grid;
+            grid-template-columns: repeat(18, 1fr);
+            gap: 3px;
+            max-width: 1200px;
+            margin: auto;
+        }
+        .element {
+            width: 60px;
+            height: 60px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            border-radius: 8px;
+            position: relative;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            overflow: hidden;
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+        }
+        .element::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(
+                transparent, 
+                rgba(255, 255, 255, 0.3), 
+                transparent 30%
+            );
+            animation: rotate 4s linear infinite;
+        }
+        @keyframes rotate {
+            100% {
+                transform: rotate(1turn);
+            }
+        }
+        .element:hover {
+            transform: scale(1.3) rotate(10deg);
+            z-index: 1;
+            box-shadow: 0 0 30px rgba(255,255,255,0.8);
+        }
+        .atomic-number {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            font-size: 10px;
+            font-weight: bold;
+            color: rgba(255, 255, 255, 0.8);
+        }
+        .symbol {
+            font-size: 22px;
+            font-weight: bold;
+            text-shadow: 0 0 5px rgba(255,255,255,0.5);
+        }
+        .name {
+            font-size: 8px;
+            margin-top: 2px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+        .electron-config {
+            font-size: 6px;
+            font-style: italic;
+            opacity: 0.7;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        .legend {
+            margin-top: 30px;
+            text-align: center;
+        }
+        .legend-item {
+            display: inline-block;
+            margin: 5px;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            box-shadow: 0 0 10px rgba(255,255,255,0.3);
+            transition: all 0.3s ease;
+        }
+        .legend-item:hover {
+            transform: translateY(-3px) scale(1.1);
+            box-shadow: 0 0 20px rgba(255,255,255,0.5);
+        }
+        .period-labels, .group-labels {
+            position: absolute;
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            font-weight: bold;
+            color: #00FFFF;
+            text-shadow: 0 0 5px #00FFFF;
+        }
+        .period-labels {
+            flex-direction: column;
+            height: 100%;
+            left: -30px;
+            top: 0;
+        }
+        .group-labels {
+            top: -30px;
+            left: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>超炫酷週期表</h1>
+        <div style="position: relative;">
+            <div class="period-labels">
+                <div>1</div><div>2</div><div>3</div><div>4</div><div>5</div><div>6</div><div>7</div>
+            </div>
+            <div class="group-labels">
+                <div>1</div><div>2</div><div>3</div><div>4</div><div>5</div><div>6</div><div>7</div><div>8</div><div>9</div><div>10</div><div>11</div><div>12</div><div>13</div><div>14</div><div>15</div><div>16</div><div>17</div><div>18</div>
+            </div>
+            <div class="periodic-table">
+    
+        <div class="element" style="background: linear-gradient(135deg, #FF69B4, #FF1493);">
+            <div class="atomic-number">1</div>
+            <div class="symbol">H</div>
+            <div class="name">氫</div>
+            <div class="electron-config">1s¹</div>
+        </div>
+        <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+        <div class="element" style="background: linear-gradient(135deg, #00FFFF, #00CED1);">
+            <div class="atomic-number">2</div>
+            <div class="symbol">He</div>
+            <div class="name">氦</div>
+            <div class="electron-config">1s²</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #FF4500, #FF0000);">
+            <div class="atomic-number">3</div>
+            <div class="symbol">Li</div>
+            <div class="name">鋰</div>
+            <div class="electron-config">[He] 2s¹</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #FFA500, #FF8C00);">
+            <div class="atomic-number">4</div>
+            <div class="symbol">Be</div>
+            <div class="name">鈹</div>
+            <div class="electron-config">[He] 2s²</div>
+        </div>
+        <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+        <div class="element" style="background: linear-gradient(135deg, #1E90FF, #4169E1);">
+            <div class="atomic-number">5</div>
+            <div class="symbol">B</div>
+            <div class="name">硼</div>
+            <div class="electron-config">[He] 2s² 2p¹</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #00FF00, #32CD32);">
+            <div class="atomic-number">6</div>
+            <div class="symbol">C</div>
+            <div class="name">碳</div>
+            <div class="electron-config">[He] 2s² 2p²</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #00FF00, #32CD32);">
+            <div class="atomic-number">7</div>
+            <div class="symbol">N</div>
+            <div class="name">氮</div>
+            <div class="electron-config">[He] 2s² 2p³</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #00FF00, #32CD32);">
+            <div class="atomic-number">8</div>
+            <div class="symbol">O</div>
+            <div class="name">氧</div>
+            <div class="electron-config">[He] 2s² 2p⁴</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #FFFF00, #FFD700);">
+            <div class="atomic-number">9</div>
+            <div class="symbol">F</div>
+            <div class="name">氟</div>
+            <div class="electron-config">[He] 2s² 2p⁵</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #00FFFF, #00CED1);">
+            <div class="atomic-number">10</div>
+            <div class="symbol">Ne</div>
+            <div class="name">氖</div>
+            <div class="electron-config">[He] 2s² 2p⁶</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #FF4500, #FF0000);">
+            <div class="atomic-number">11</div>
+            <div class="symbol">Na</div>
+            <div class="name">鈉</div>
+            <div class="electron-config">[Ne] 3s¹</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #FFA500, #FF8C00);">
+            <div class="atomic-number">12</div>
+            <div class="symbol">Mg</div>
+            <div class="name">鎂</div>
+            <div class="electron-config">[Ne] 3s²</div>
+        </div>
+        <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+        <div class="element" style="background: linear-gradient(135deg, #C0C0C0, #A9A9A9);">
+            <div class="atomic-number">13</div>
+            <div class="symbol">Al</div>
+            <div class="name">鋁</div>
+            <div class="electron-config">[Ne] 3s² 3p¹</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #1E90FF, #4169E1);">
+            <div class="atomic-number">14</div>
+            <div class="symbol">Si</div>
+            <div class="name">矽</div>
+            <div class="electron-config">[Ne] 3s² 3p²</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #00FF00, #32CD32);">
+            <div class="atomic-number">15</div>
+            <div class="symbol">P</div>
+            <div class="name">磷</div>
+            <div class="electron-config">[Ne] 3s² 3p³</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #00FF00, #32CD32);">
+            <div class="atomic-number">16</div>
+            <div class="symbol">S</div>
+            <div class="name">硫</div>
+            <div class="electron-config">[Ne] 3s² 3p⁴</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #FFFF00, #FFD700);">
+            <div class="atomic-number">17</div>
+            <div class="symbol">Cl</div>
+            <div class="name">氯</div>
+            <div class="electron-config">[Ne] 3s² 3p⁵</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #00FFFF, #00CED1);">
+            <div class="atomic-number">18</div>
+            <div class="symbol">Ar</div>
+            <div class="name">氬</div>
+            <div class="electron-config">[Ne] 3s² 3p⁶</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #FF4500, #FF0000);">
+            <div class="atomic-number">19</div>
+            <div class="symbol">K</div>
+            <div class="name">鉀</div>
+            <div class="electron-config">[Ar] 4s¹</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #FFA500, #FF8C00);">
+            <div class="atomic-number">20</div>
+            <div class="symbol">Ca</div>
+            <div class="name">鈣</div>
+            <div class="electron-config">[Ar] 4s²</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #FFD700, #FFA07A);">
+            <div class="atomic-number">21</div>
+            <div class="symbol">Sc</div>
+            <div class="name">鈧</div>
+            <div class="electron-config">[Ar] 3d¹ 4s²</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #FFD700, #FFA07A);">
+            <div class="atomic-number">22</div>
+            <div class="symbol">Ti</div>
+            <div class="name">鈦</div>
+            <div class="electron-config">[Ar] 3d² 4s²</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #FFD700, #FFA07A);">
+            <div class="atomic-number">23</div>
+            <div class="symbol">V</div>
+            <div class="name">釩</div>
+            <div class="electron-config">[Ar] 3d³ 4s²</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #FFD700, #FFA07A);">
+            <div class="atomic-number">24</div>
+            <div class="symbol">Cr</div>
+            <div class="name">鉻</div>
+            <div class="electron-config">[Ar] 3d⁵ 4s¹</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #FFD700, #FFA07A);">
+            <div class="atomic-number">25</div>
+            <div class="symbol">Mn</div>
+            <div class="name">錳</div>
+            <div class="electron-config">[Ar] 3d⁵ 4s²</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #FFD700, #FFA07A);">
+            <div class="atomic-number">26</div>
+            <div class="symbol">Fe</div>
+            <div class="name">鐵</div>
+            <div class="electron-config">[Ar] 3d⁶ 4s²</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #FFD700, #FFA07A);">
+            <div class="atomic-number">27</div>
+            <div class="symbol">Co</div>
+            <div class="name">鈷</div>
+            <div class="electron-config">[Ar] 3d⁷ 4s²</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #FFD700, #FFA07A);">
+            <div class="atomic-number">28</div>
+            <div class="symbol">Ni</div>
+            <div class="name">鎳</div>
+            <div class="electron-config">[Ar] 3d⁸ 4s²</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #FFD700, #FFA07A);">
+            <div class="atomic-number">29</div>
+            <div class="symbol">Cu</div>
+            <div class="name">銅</div>
+            <div class="electron-config">[Ar] 3d¹⁰ 4s¹</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #FFD700, #FFA07A);">
+            <div class="atomic-number">30</div>
+            <div class="symbol">Zn</div>
+            <div class="name">鋅</div>
+            <div class="electron-config">[Ar] 3d¹⁰ 4s²</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #C0C0C0, #A9A9A9);">
+            <div class="atomic-number">31</div>
+            <div class="symbol">Ga</div>
+            <div class="name">鎵</div>
+            <div class="electron-config">[Ar] 3d¹⁰ 4s² 4p¹</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #1E90FF, #4169E1);">
+            <div class="atomic-number">32</div>
+            <div class="symbol">Ge</div>
+            <div class="name">鍺</div>
+            <div class="electron-config">[Ar] 3d¹⁰ 4s² 4p²</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #1E90FF, #4169E1);">
+            <div class="atomic-number">33</div>
+            <div class="symbol">As</div>
+            <div class="name">砷</div>
+            <div class="electron-config">[Ar] 3d¹⁰ 4s² 4p³</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #00FF00, #32CD32);">
+            <div class="atomic-number">34</div>
+            <div class="symbol">Se</div>
+            <div class="name">硒</div>
+            <div class="electron-config">[Ar] 3d¹⁰ 4s² 4p⁴</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #FFFF00, #FFD700);">
+            <div class="atomic-number">35</div>
+            <div class="symbol">Br</div>
+            <div class="name">溴</div>
+            <div class="electron-config">[Ar] 3d¹⁰ 4s² 4p⁵</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #00FFFF, #00CED1);">
+            <div class="atomic-number">36</div>
+            <div class="symbol">Kr</div>
+            <div class="name">氪</div>
+            <div class="electron-config">[Ar] 3d¹⁰ 4s² 4p⁶</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #FF4500, #FF0000);">
+            <div class="atomic-number">37</div>
+            <div class="symbol">Rb</div>
+            <div class="name">銣</div>
+            <div class="electron-config">[Kr] 5s¹</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #FFA500, #FF8C00);">
+            <div class="atomic-number">38</div>
+            <div class="symbol">Sr</div>
+            <div class="name">鍶</div>
+            <div class="electron-config">[Kr] 5s²</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #FFD700, #FFA07A);">
+            <div class="atomic-number">39</div>
+            <div class="symbol">Y</div>
+            <div class="name">釔</div>
+            <div class="electron-config">[Kr] 4d¹ 5s²</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #FFD700, #FFA07A);">
+            <div class="atomic-number">40</div>
+            <div class="symbol">Zr</div>
+            <div class="name">鋯</div>
+            <div class="electron-config">[Kr] 4d² 5s²</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #FFD700, #FFA07A);">
+            <div class="atomic-number">41</div>
+            <div class="symbol">Nb</div>
+            <div class="name">鈮</div>
+            <div class="electron-config">[Kr] 4d⁴ 5s¹</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #FFD700, #FFA07A);">
+            <div class="atomic-number">42</div>
+            <div class="symbol">Mo</div>
+            <div class="name">鉬</div>
+            <div class="electron-config">[Kr] 4d⁵ 5s¹</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #FFD700, #FFA07A);">
+            <div class="atomic-number">43</div>
+            <div class="symbol">Tc</div>
+            <div class="name">鎝</div>
+            <div class="electron-config">[Kr] 4d⁵ 5s²</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #FFD700, #FFA07A);">
+            <div class="atomic-number">44</div>
+            <div class="symbol">Ru</div>
+            <div class="name">釕</div>
+            <div class="electron-config">[Kr] 4d⁷ 5s¹</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #FFD700, #FFA07A);">
+            <div class="atomic-number">45</div>
+            <div class="symbol">Rh</div>
+            <div class="name">銠</div>
+            <div class="electron-config">[Kr] 4d⁸ 5s¹</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #FFD700, #FFA07A);">
+            <div class="atomic-number">46</div>
+            <div class="symbol">Pd</div>
+            <div class="name">鈀</div>
+            <div class="electron-config">[Kr] 4d¹⁰</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #FFD700, #FFA07A);">
+            <div class="atomic-number">47</div>
+            <div class="symbol">Ag</div>
+            <div class="name">銀</div>
+            <div class="electron-config">[Kr] 4d¹⁰ 5s¹</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #FFD700, #FFA07A);">
+            <div class="atomic-number">48</div>
+            <div class="symbol">Cd</div>
+            <div class="name">鎘</div>
+            <div class="electron-config">[Kr] 4d¹⁰ 5s²</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #C0C0C0, #A9A9A9);">
+            <div class="atomic-number">49</div>
+            <div class="symbol">In</div>
+            <div class="name">銦</div>
+            <div class="electron-config">[Kr] 4d¹⁰ 5s² 5p¹</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #C0C0C0, #A9A9A9);">
+            <div class="atomic-number">50</div>
+            <div class="symbol">Sn</div>
+            <div class="name">錫</div>
+            <div class="electron-config">[Kr] 4d¹⁰ 5s² 5p²</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #1E90FF, #4169E1);">
+            <div class="atomic-number">51</div>
+            <div class="symbol">Sb</div>
+            <div class="name">銻</div>
+            <div class="electron-config">[Kr] 4d¹⁰ 5s² 5p³</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #1E90FF, #4169E1);">
+            <div class="atomic-number">52</div>
+            <div class="symbol">Te</div>
+            <div class="name">碲</div>
+            <div class="electron-config">[Kr] 4d¹⁰ 5s² 5p⁴</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #FFFF00, #FFD700);">
+            <div class="atomic-number">53</div>
+            <div class="symbol">I</div>
+            <div class="name">碘</div>
+            <div class="electron-config">[Kr] 4d¹⁰ 5s² 5p⁵</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #00FFFF, #00CED1);">
+            <div class="atomic-number">54</div>
+            <div class="symbol">Xe</div>
+            <div class="name">氙</div>
+            <div class="electron-config">[Kr] 4d¹⁰ 5s² 5p⁶</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #FF4500, #FF0000);">
+            <div class="atomic-number">55</div>
+            <div class="symbol">Cs</div>
+            <div class="name">銫</div>
+            <div class="electron-config">[Xe] 6s¹</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #FFA500, #FF8C00);">
+            <div class="atomic-number">56</div>
+            <div class="symbol">Ba</div>
+            <div class="name">鋇</div>
+            <div class="electron-config">[Xe] 6s²</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #FFD700, #FFA07A);">
+            <div class="atomic-number">57</div>
+            <div class="symbol">La</div>
+            <div class="name">鑭</div>
+            <div class="electron-config">[Xe] 5d¹ 6s²</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #FFD700, #FFA07A);">
+            <div class="atomic-number">58</div>
+            <div class="symbol">Hf</div>
+            <div class="name">鉿</div>
+            <div class="electron-config">[Xe] 4f¹⁴ 5d² 6s²</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #FFD700, #FFA07A);">
+            <div class="atomic-number">59</div>
+            <div class="symbol">Ta</div>
+            <div class="name">鉭</div>
+            <div class="electron-config">[Xe] 4f¹⁴ 5d³ 6s²</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #FFD700, #FFA07A);">
+            <div class="atomic-number">60</div>
+            <div class="symbol">W</div>
+            <div class="name">鎢</div>
+            <div class="electron-config">[Xe] 4f¹⁴ 5d⁴ 6s²</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #FFD700, #FFA07A);">
+            <div class="atomic-number">61</div>
+            <div class="symbol">Re</div>
+            <div class="name">錸</div>
+            <div class="electron-config">[Xe] 4f¹⁴ 5d⁵ 6s²</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #FFD700, #FFA07A);">
+            <div class="atomic-number">62</div>
+            <div class="symbol">Os</div>
+            <div class="name">鋨</div>
+            <div class="electron-config">[Xe] 4f¹⁴ 5d⁶ 6s²</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #FFD700, #FFA07A);">
+            <div class="atomic-number">63</div>
+            <div class="symbol">Ir</div>
+            <div class="name">銥</div>
+            <div class="electron-config">[Xe] 4f¹⁴ 5d⁷ 6s²</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #FFD700, #FFA07A);">
+            <div class="atomic-number">64</div>
+            <div class="symbol">Pt</div>
+            <div class="name">鉑</div>
+            <div class="electron-config">[Xe] 4f¹⁴ 5d⁹ 6s¹</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #FFD700, #FFA07A);">
+            <div class="atomic-number">65</div>
+            <div class="symbol">Au</div>
+            <div class="name">金</div>
+            <div class="electron-config">[Xe] 4f¹⁴ 5d¹⁰ 6s¹</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #FFD700, #FFA07A);">
+            <div class="atomic-number">66</div>
+            <div class="symbol">Hg</div>
+            <div class="name">汞</div>
+            <div class="electron-config">[Xe] 4f¹⁴ 5d¹⁰ 6s²</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #C0C0C0, #A9A9A9);">
+            <div class="atomic-number">67</div>
+            <div class="symbol">Tl</div>
+            <div class="name">鉈</div>
+            <div class="electron-config">[Xe] 4f¹⁴ 5d¹⁰ 6s² 6p¹</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #C0C0C0, #A9A9A9);">
+            <div class="atomic-number">68</div>
+            <div class="symbol">Pb</div>
+            <div class="name">鉛</div>
+            <div class="electron-config">[Xe] 4f¹⁴ 5d¹⁰ 6s² 6p²</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #C0C0C0, #A9A9A9);">
+            <div class="atomic-number">69</div>
+            <div class="symbol">Bi</div>
+            <div class="name">鉍</div>
+            <div class="electron-config">[Xe] 4f¹⁴ 5d¹⁰ 6s² 6p³</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #C0C0C0, #A9A9A9);">
+            <div class="atomic-number">70</div>
+            <div class="symbol">Po</div>
+            <div class="name">釙</div>
+            <div class="electron-config">[Xe] 4f¹⁴ 5d¹⁰ 6s² 6p⁴</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #FFFF00, #FFD700);">
+            <div class="atomic-number">71</div>
+            <div class="symbol">At</div>
+            <div class="name">砈</div>
+            <div class="electron-config">[Xe] 4f¹⁴ 5d¹⁰ 6s² 6p⁵</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #00FFFF, #00CED1);">
+            <div class="atomic-number">72</div>
+            <div class="symbol">Rn</div>
+            <div class="name">氡</div>
+            <div class="electron-config">[Xe] 4f¹⁴ 5d¹⁰ 6s² 6p⁶</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #FF4500, #FF0000);">
+            <div class="atomic-number">73</div>
+            <div class="symbol">Fr</div>
+            <div class="name">鍅</div>
+            <div class="electron-config">[Rn] 7s¹</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #FFA500, #FF8C00);">
+            <div class="atomic-number">74</div>
+            <div class="symbol">Ra</div>
+            <div class="name">鐳</div>
+            <div class="electron-config">[Rn] 7s²</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #FFD700, #FFA07A);">
+            <div class="atomic-number">75</div>
+            <div class="symbol">Ac</div>
+            <div class="name">錒</div>
+            <div class="electron-config">[Rn] 6d¹ 7s²</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #FFD700, #FFA07A);">
+            <div class="atomic-number">76</div>
+            <div class="symbol">Rf</div>
+            <div class="name">鑪</div>
+            <div class="electron-config">[Rn] 5f¹⁴ 6d² 7s²</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #FFD700, #FFA07A);">
+            <div class="atomic-number">77</div>
+            <div class="symbol">Db</div>
+            <div class="name">𨧀</div>
+            <div class="electron-config">[Rn] 5f¹⁴ 6d³ 7s²</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #FFD700, #FFA07A);">
+            <div class="atomic-number">78</div>
+            <div class="symbol">Sg</div>
+            <div class="name">𨭎</div>
+            <div class="electron-config">[Rn] 5f¹⁴ 6d⁴ 7s²</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #FFD700, #FFA07A);">
+            <div class="atomic-number">79</div>
+            <div class="symbol">Bh</div>
+            <div class="name">𨨏</div>
+            <div class="electron-config">[Rn] 5f¹⁴ 6d⁵ 7s²</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #FFD700, #FFA07A);">
+            <div class="atomic-number">80</div>
+            <div class="symbol">Hs</div>
+            <div class="name">𨭆</div>
+            <div class="electron-config">[Rn] 5f¹⁴ 6d⁶ 7s²</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #FFD700, #FFA07A);">
+            <div class="atomic-number">81</div>
+            <div class="symbol">Mt</div>
+            <div class="name">䥑</div>
+            <div class="electron-config">[Rn] 5f¹⁴ 6d⁷ 7s²</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #FFD700, #FFA07A);">
+            <div class="atomic-number">82</div>
+            <div class="symbol">Ds</div>
+            <div class="name">鐽</div>
+            <div class="electron-config">[Rn] 5f¹⁴ 6d⁸ 7s²</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #FFD700, #FFA07A);">
+            <div class="atomic-number">83</div>
+            <div class="symbol">Rg</div>
+            <div class="name">錀</div>
+            <div class="electron-config">[Rn] 5f¹⁴ 6d¹⁰ 7s¹</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #FFD700, #FFA07A);">
+            <div class="atomic-number">84</div>
+            <div class="symbol">Cn</div>
+            <div class="name">鎶</div>
+            <div class="electron-config">[Rn] 5f¹⁴ 6d¹⁰ 7s²</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #C0C0C0, #A9A9A9);">
+            <div class="atomic-number">85</div>
+            <div class="symbol">Nh</div>
+            <div class="name">鉨</div>
+            <div class="electron-config">[Rn] 5f¹⁴ 6d¹⁰ 7s² 7p¹</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #C0C0C0, #A9A9A9);">
+            <div class="atomic-number">86</div>
+            <div class="symbol">Fl</div>
+            <div class="name">鈇</div>
+            <div class="electron-config">[Rn] 5f¹⁴ 6d¹⁰ 7s² 7p²</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #C0C0C0, #A9A9A9);">
+            <div class="atomic-number">87</div>
+            <div class="symbol">Mc</div>
+            <div class="name">鏌</div>
+            <div class="electron-config">[Rn] 5f¹⁴ 6d¹⁰ 7s² 7p³</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #C0C0C0, #A9A9A9);">
+            <div class="atomic-number">88</div>
+            <div class="symbol">Lv</div>
+            <div class="name">鉝</div>
+            <div class="electron-config">[Rn] 5f¹⁴ 6d¹⁰ 7s² 7p⁴</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #FFFF00, #FFD700);">
+            <div class="atomic-number">89</div>
+            <div class="symbol">Ts</div>
+            <div class="name">鿬</div>
+            <div class="electron-config">[Rn] 5f¹⁴ 6d¹⁰ 7s² 7p⁵</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #00FFFF, #00CED1);">
+            <div class="atomic-number">90</div>
+            <div class="symbol">Og</div>
+            <div class="name">鿫</div>
+            <div class="electron-config">[Rn] 5f¹⁴ 6d¹⁰ 7s² 7p⁶</div>
+        </div>
+        <div></div><div></div>
+        <div class="element" style="background: linear-gradient(135deg, #FF00FF, #8A2BE2);">
+            <div class="atomic-number">91</div>
+            <div class="symbol">Ce</div>
+            <div class="name">鈰</div>
+            <div class="electron-config">[Xe] 4f¹ 5d¹ 6s²</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #FF00FF, #8A2BE2);">
+            <div class="atomic-number">92</div>
+            <div class="symbol">Pr</div>
+            <div class="name">鐠</div>
+            <div class="electron-config">[Xe] 4f³ 6s²</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #FF00FF, #8A2BE2);">
+            <div class="atomic-number">93</div>
+            <div class="symbol">Nd</div>
+            <div class="name">釹</div>
+            <div class="electron-config">[Xe] 4f⁴ 6s²</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #FF00FF, #8A2BE2);">
+            <div class="atomic-number">94</div>
+            <div class="symbol">Pm</div>
+            <div class="name">鉕</div>
+            <div class="electron-config">[Xe] 4f⁵ 6s²</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #FF00FF, #8A2BE2);">
+            <div class="atomic-number">95</div>
+            <div class="symbol">Sm</div>
+            <div class="name">釤</div>
+            <div class="electron-config">[Xe] 4f⁶ 6s²</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #FF00FF, #8A2BE2);">
+            <div class="atomic-number">96</div>
+            <div class="symbol">Eu</div>
+            <div class="name">銪</div>
+            <div class="electron-config">[Xe] 4f⁷ 6s²</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #FF00FF, #8A2BE2);">
+            <div class="atomic-number">97</div>
+            <div class="symbol">Gd</div>
+            <div class="name">釓</div>
+            <div class="electron-config">[Xe] 4f⁷ 5d¹ 6s²</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #FF00FF, #8A2BE2);">
+            <div class="atomic-number">98</div>
+            <div class="symbol">Tb</div>
+            <div class="name">鋱</div>
+            <div class="electron-config">[Xe] 4f⁹ 6s²</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #FF00FF, #8A2BE2);">
+            <div class="atomic-number">99</div>
+            <div class="symbol">Dy</div>
+            <div class="name">鏑</div>
+            <div class="electron-config">[Xe] 4f¹⁰ 6s²</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #FF00FF, #8A2BE2);">
+            <div class="atomic-number">100</div>
+            <div class="symbol">Ho</div>
+            <div class="name">鈥</div>
+            <div class="electron-config">[Xe] 4f¹¹ 6s²</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #FF00FF, #8A2BE2);">
+            <div class="atomic-number">101</div>
+            <div class="symbol">Er</div>
+            <div class="name">鉺</div>
+            <div class="electron-config">[Xe] 4f¹² 6s²</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #FF00FF, #8A2BE2);">
+            <div class="atomic-number">102</div>
+            <div class="symbol">Tm</div>
+            <div class="name">銩</div>
+            <div class="electron-config">[Xe] 4f¹³ 6s²</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #FF00FF, #8A2BE2);">
+            <div class="atomic-number">103</div>
+            <div class="symbol">Yb</div>
+            <div class="name">鐿</div>
+            <div class="electron-config">[Xe] 4f¹⁴ 6s²</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #FF00FF, #8A2BE2);">
+            <div class="atomic-number">104</div>
+            <div class="symbol">Lu</div>
+            <div class="name">鎦</div>
+            <div class="electron-config">[Xe] 4f¹⁴ 5d¹ 6s²</div>
+        </div>
+        <div></div><div></div><div></div><div></div>
+        <div class="element" style="background: linear-gradient(135deg, #FF1493, #C71585);">
+            <div class="atomic-number">105</div>
+            <div class="symbol">Th</div>
+            <div class="name">釷</div>
+            <div class="electron-config">[Rn] 6d² 7s²</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #FF1493, #C71585);">
+            <div class="atomic-number">106</div>
+            <div class="symbol">Pa</div>
+            <div class="name">鏷</div>
+            <div class="electron-config">[Rn] 5f² 6d¹ 7s²</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #FF1493, #C71585);">
+            <div class="atomic-number">107</div>
+            <div class="symbol">U</div>
+            <div class="name">鈾</div>
+            <div class="electron-config">[Rn] 5f³ 6d¹ 7s²</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #FF1493, #C71585);">
+            <div class="atomic-number">108</div>
+            <div class="symbol">Np</div>
+            <div class="name">錼</div>
+            <div class="electron-config">[Rn] 5f⁴ 6d¹ 7s²</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #FF1493, #C71585);">
+            <div class="atomic-number">109</div>
+            <div class="symbol">Pu</div>
+            <div class="name">鈽</div>
+            <div class="electron-config">[Rn] 5f⁶ 7s²</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #FF1493, #C71585);">
+            <div class="atomic-number">110</div>
+            <div class="symbol">Am</div>
+            <div class="name">鋂</div>
+            <div class="electron-config">[Rn] 5f⁷ 7s²</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #FF1493, #C71585);">
+            <div class="atomic-number">111</div>
+            <div class="symbol">Cm</div>
+            <div class="name">鋦</div>
+            <div class="electron-config">[Rn] 5f⁷ 6d¹ 7s²</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #FF1493, #C71585);">
+            <div class="atomic-number">112</div>
+            <div class="symbol">Bk</div>
+            <div class="name">鉳</div>
+            <div class="electron-config">[Rn] 5f⁹ 7s²</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #FF1493, #C71585);">
+            <div class="atomic-number">113</div>
+            <div class="symbol">Cf</div>
+            <div class="name">鉲</div>
+            <div class="electron-config">[Rn] 5f¹⁰ 7s²</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #FF1493, #C71585);">
+            <div class="atomic-number">114</div>
+            <div class="symbol">Es</div>
+            <div class="name">鑀</div>
+            <div class="electron-config">[Rn] 5f¹¹ 7s²</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #FF1493, #C71585);">
+            <div class="atomic-number">115</div>
+            <div class="symbol">Fm</div>
+            <div class="name">鐨</div>
+            <div class="electron-config">[Rn] 5f¹² 7s²</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #FF1493, #C71585);">
+            <div class="atomic-number">116</div>
+            <div class="symbol">Md</div>
+            <div class="name">鍆</div>
+            <div class="electron-config">[Rn] 5f¹³ 7s²</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #FF1493, #C71585);">
+            <div class="atomic-number">117</div>
+            <div class="symbol">No</div>
+            <div class="name">鍩</div>
+            <div class="electron-config">[Rn] 5f¹⁴ 7s²</div>
+        </div>
+        
+        <div class="element" style="background: linear-gradient(135deg, #FF1493, #C71585);">
+            <div class="atomic-number">118</div>
+            <div class="symbol">Lr</div>
+            <div class="name">鐒</div>
+            <div class="electron-config">[Rn] 5f¹⁴ 6d¹ 7s²</div>
+        </div>
+        <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+            </div>
+        </div>
+        <div class="legend">
+            <h3>圖例</h3>
+    <span class="legend-item" style="background: linear-gradient(135deg, #FF4500, #FF0000);">鹼金屬</span><span class="legend-item" style="background: linear-gradient(135deg, #FFA500, #FF8C00);">鹼土金屬</span><span class="legend-item" style="background: linear-gradient(135deg, #FFD700, #FFA07A);">過渡金屬</span><span class="legend-item" style="background: linear-gradient(135deg, #C0C0C0, #A9A9A9);">其他金屬</span><span class="legend-item" style="background: linear-gradient(135deg, #1E90FF, #4169E1);">類金屬</span><span class="legend-item" style="background: linear-gradient(135deg, #00FF00, #32CD32);">非金屬</span><span class="legend-item" style="background: linear-gradient(135deg, #FFFF00, #FFD700);">鹵素</span><span class="legend-item" style="background: linear-gradient(135deg, #00FFFF, #00CED1);">稀有氣體</span><span class="legend-item" style="background: linear-gradient(135deg, #FF00FF, #8A2BE2);">鑭系元素</span><span class="legend-item" style="background: linear-gradient(135deg, #FF1493, #C71585);">錒系元素</span>
+        </div>
+    </div>
+    <script>
+        document.querySelectorAll('.element').forEach(el => {
+            el.addEventListener('mouseover', () => {
+                el.style.animationPlayState = 'paused';
+            });
+            el.addEventListener('mouseout', () => {
+                el.style.animationPlayState = 'running';
+            });
+        });
+    </script>
+</body>
+</html>
+    
